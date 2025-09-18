@@ -133,7 +133,7 @@ app.get("/track", (req, res) => {
   queue.push({ path, ip });
 
   console.log(`[QUEUE] ${path} - ${ip} (cola: ${queue.length})`);
-  res.json({ success: true });
+   res.send(`<h1>Aguante River! Estás en /${path}</h1>`);
 });
 
 
