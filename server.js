@@ -191,9 +191,17 @@ app.get("/track", (req, res) => {
 // Ver últimos logs
 app.get("/logs", async (req, res) => {
   try {
-    const result = await db.execute(
-      "SELECT * FROM visits ORDER BY created_at DESC LIMIT 200"
-    );
+    // tomar limit desde query o default 200
+    const limitRaw = parseInt(req.query.limit, 10);
+    let limit = Number.isFinite(limitRaw) && limitRaw > 0 ? limitRaw : 200;
+    // seguridad: no permitir límites absurdos
+    if (limit > 5000) limit = 5000;
+
+    const result = await db.execute({
+      sql: `SELECT * FROM visits ORDER BY created_at DESC LIMIT ${limit}`,
+      args: [],
+    });
+
     res.json(result.rows);
   } catch (error) {
     console.error("Error obteniendo logs:", error);
